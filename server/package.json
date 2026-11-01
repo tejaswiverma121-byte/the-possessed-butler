@@ -1,5 +1,5 @@
 {
-  "name": "problem2product-server",
+  "name": "sentinel-ai-server",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,16 +9,22 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "imapflow": "^2.10.0",
+    "mailparser": "^3.14.1",
+    "nodemailer": "^10.3.1",
     "uuid": "^11.0.5",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/mailparser": "^3.9.0",
     "@types/node": "^22.13.1",
+    "@types/nodemailer": "^8.0.2",
     "@types/uuid": "^10.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

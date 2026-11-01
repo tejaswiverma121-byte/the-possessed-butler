@@ -1,313 +1,136 @@
-export interface ProjectInput {
-  title: string;
-  problemStatement: string;
-  targetUsers?: string;
-  existingSolutions?: string;
-  constraints?: string;
-  preferences?: string;
+// ================= SENTINEL AI TYPES =================
+
+export type SentinelView = 'chat' | 'email' | 'tasks' | 'security' | 'apps' | 'settings' | 'android';
+
+export interface ImapConfig {
+  host: string;
+  port: number;
+  secure?: boolean;
+  user: string;
+  pass: string;
+  mailbox?: string;
 }
 
-export interface ProblemBrief {
-  whatIsHappening: string;
-  whoIsAffected: string;
-  frequencyAndImpact: string;
-  currentWorkarounds: string;
-  whyExistingFails: string;
-  successCriteria: Array<{
-    id: string;
-    metric: string;
-    target: string;
-    evaluationMethod: string;
-  }>;
-  knownFacts: string[];
-  assumptions: string[];
-  hypotheses: string[];
+export interface ImapStatus {
+  isConnected: boolean;
+  provider: 'gmail' | 'outlook' | 'custom_imap' | 'simulation';
+  host?: string;
+  user?: string;
+  mailbox?: string;
+  lastSyncedAt?: string;
+  totalSynced?: number;
+  lastError?: string;
 }
 
-export type RootCauseCategory = 'process' | 'people' | 'technology' | 'information' | 'environment' | 'policy';
-export type EpistemicStatus = 'verified' | 'user_reported' | 'inferred' | 'unverified_hypothesis';
-
-export interface RootCause {
+export interface SentinelUserAccount {
   id: string;
-  title: string;
-  explanation: string;
-  fiveWhys: string[];
-  category: RootCauseCategory;
-  evidence: string;
-  epistemicStatus: EpistemicStatus;
-  mechanism: string;
-  affectedWorkflows: string[];
-  unresolvedConsequence: string;
-  validationMethod: string;
-  confidenceLevel: number;
-  confidenceExplanation: string;
-  neededForConfidence: string;
+  email: string;
+  name: string;
+  provider: 'gmail' | 'outlook' | 'custom_imap' | 'simulation';
+  imapHost?: string;
+  imapPort?: number;
+  connectedAt: string;
+  trustedSenders: string[];
+  blockedSenders: string[];
+  isLiveImapConnected?: boolean;
+  imapStatus?: ImapStatus;
 }
 
-export interface EvidenceAssumptionItem {
+export interface SentinelAttachment {
   id: string;
-  type: 'verified_fact' | 'user_reported' | 'inferred' | 'hypothesis' | 'unknown';
-  statement: string;
-  source: string;
-  status: 'confirmed' | 'disputed' | 'needs_validation';
-  userCorrection?: string;
+  name: string;
+  mimeType: string;
+  sizeBytes: number;
+  extractedText?: string;
+  ocrSummary?: string;
+  riskLevel: 'low' | 'suspicious' | 'high_risk' | 'inconclusive';
+  riskFindings: string[];
 }
 
-export interface SolutionOption {
+export interface SentinelEmail {
   id: string;
-  title: string;
-  tagline: string;
-  overview: string;
-  howItWorks: string;
-  addressedRootCauseIds: string[];
-  userBenefits: Record<string, string>;
-  requiredFeatures: string[];
-  advantages: string[];
-  disadvantages: string[];
-  complexity: 'low' | 'medium' | 'high' | 'very_high';
-  estimatedEffort: string;
-  relativeCost: 'minimal' | 'moderate' | 'significant' | 'enterprise';
-  securityAndPrivacy: string;
-  accessibilityAndScalability: string;
-  dependenciesAndAssumptions: string[];
-  risksAndConsequences: string[];
-  successMeasurement: string;
-  scoreBreakdown: {
-    effectiveness: number;
-    userValue: number;
-    feasibility: number;
-    maintainability: number;
-    riskScore: number;
+  from: string;
+  to: string;
+  subject: string;
+  date: string;
+  body: string;
+  isRead: boolean;
+  category: 'important' | 'urgent' | 'invoice' | 'booking' | 'routine' | 'suspicious';
+  attachments: SentinelAttachment[];
+  riskAssessment: {
+    level: 'low' | 'suspicious' | 'high_risk' | 'inconclusive';
+    reasons: string[];
+    canaryDetected: boolean;
+    senderMatch: boolean;
+    safeToPreview: boolean;
+  };
+  promptGuardScan?: {
+    scan_id: string;
+    email_id: string;
+    timestamp: string;
+    latency_ms: number;
+    scan_status: 'completed' | 'unavailable' | 'error';
+    model: string;
+    attack_detected: boolean;
+    classification: 'benign' | 'suspicious' | 'malicious' | 'scan_unavailable';
+    risk_score: number;
+    confidence: number;
+    flagged_chunks: number[];
+    total_chunks_scanned: number;
+    explanation: string;
+    has_attachments_scanned: boolean;
+    attachment_count: number;
+    hidden_findings: string[];
+    decision: 'ALLOW_UNTRUSTED' | 'FLAGGED_FOR_REVIEW' | 'QUARANTINE_BLOCKED' | 'HOLD_FOR_REVIEW';
+    risk_tier: 'LOW_RISK' | 'MEDIUM_RISK' | 'HIGH_RISK' | 'SCAN_UNAVAILABLE';
+    allow_llm_processing: boolean;
+    require_user_review: boolean;
+    badge_color: 'green' | 'yellow' | 'red' | 'grey';
+    summary: string;
+    policy_enforcements: string[];
   };
 }
 
-export interface TraceabilityItem {
+export interface SentinelTask {
   id: string;
-  rootCauseId: string;
-  rootCauseTitle: string;
-  mitigation: string;
-  websiteFeature: string;
-  implementationFiles: string[];
-  verificationTest: string;
-  outcomeMetric: string;
-  status: 'mapped' | 'implemented' | 'verified';
-}
-
-export interface RequirementsDesign {
-  functionalRequirements: Array<{
+  goal: string;
+  createdAt: string;
+  updatedAt: string;
+  status: 'idle' | 'planning' | 'awaiting_approval' | 'executing' | 'verifying' | 'completed' | 'failed' | 'cancelled';
+  progressPercent: number;
+  requiredPermissions: string[];
+  steps: Array<{
     id: string;
-    priority: 'MVP' | 'P1' | 'P2';
+    name: string;
+    tool: string;
+    status: 'pending' | 'in_progress' | 'passed' | 'failed' | 'skipped';
+    resultSnippet?: string;
+  }>;
+  approvalCheckpoint?: {
+    id: string;
+    actionType: 'send_email' | 'delete_data' | 'execute_patch' | 'grant_permission';
     title: string;
     description: string;
-    acceptanceCriteria: string[];
-  }>;
-  nonFunctionalRequirements: Array<{
-    id: string;
-    category: string;
-    target: string;
-  }>;
-  userPersonas: Array<{
-    name: string;
-    role: string;
-    painPoints: string[];
-    goals: string[];
-  }>;
-  userJourneys: Array<{
-    persona: string;
-    steps: string[];
-    happyPath: string;
-    recoveryFlow: string;
-  }>;
-  pageAndRouteMap: Array<{
-    path: string;
-    name: string;
-    purpose: string;
-    components: string[];
-  }>;
-  databaseSchema: Array<{
-    table: string;
-    fields: Array<{ name: string; type: string; constraints: string }>;
-    relationships: string;
-  }>;
-  apiContracts: Array<{
-    method: string;
-    endpoint: string;
-    description: string;
-    requestBody?: any;
-    responseBody: any;
-    auth: string;
-  }>;
+    recipientOrDestination?: string;
+    amountOrFee?: string;
+    details: Record<string, any>;
+    expiresAt: string;
+    status: 'pending' | 'approved' | 'rejected' | 'expired';
+    approvalToken?: string;
+  };
+  resultSummary?: string;
+  evidence: string[];
+  residualRisks: string[];
 }
 
-export type RiskSeverity = 'low' | 'medium' | 'high' | 'critical';
-export type RiskStatus = 'identified' | 'mitigated' | 'fixed' | 'verified' | 'accepted' | 'blocked' | 'untested';
-
-export interface RiskItem {
+export interface SentinelChatMessage {
   id: string;
-  affectedFeature: string;
-  category: 'input_boundary' | 'concurrency' | 'network_timeout' | 'auth_security' | 'data_integrity' | 'accessibility' | 'scalability' | 'external_dependency';
-  description: string;
-  evidenceOrReason: string;
-  likelihood: 'low' | 'medium' | 'high';
-  impact: 'low' | 'medium' | 'high' | 'critical';
-  severity: RiskSeverity;
-  priority: 'P0' | 'P1' | 'P2' | 'P3';
-  mitigation: string;
-  associatedTestId: string;
-  status: RiskStatus;
-}
-
-export interface GeneratedFile {
-  path: string;
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  language: string;
-  purpose: string;
-  isModified?: boolean;
-}
-
-export interface TestCase {
-  id: string;
-  name: string;
-  code: string;
-  status: 'passed' | 'failed' | 'skipped' | 'blocked' | 'untested';
-  errorTrace?: string;
-  durationMs?: number;
-  mappedRequirementId?: string;
-  mappedRiskId?: string;
-}
-
-export interface TestSuite {
-  id: string;
-  name: string;
-  type: 'unit' | 'integration' | 'contract' | 'accessibility' | 'security_boundary';
-  tests: TestCase[];
-}
-
-export interface RepairRecord {
-  id: string;
   timestamp: string;
-  detectedFailure: string;
-  rootCauseIdentified: string;
-  filePath: string;
-  patchDiff: string;
-  rerunStatus: 'passed' | 'failed';
-  regressionCheck: string;
-}
-
-export interface ProjectState {
-  id: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  currentStage: number;
-  status: 'draft' | 'analyzing' | 'generating' | 'testing' | 'repairing' | 'completed' | 'error';
-  mode: 'mode_a_new_product' | 'mode_b_repo_doctor';
-  input: ProjectInput;
-  problemBrief?: ProblemBrief;
-  rootCauses?: RootCause[];
-  evidenceAndAssumptions?: EvidenceAssumptionItem[];
-  solutionOptions?: SolutionOption[];
-  recommendedSolutionId?: string;
-  recommendationRationale?: string;
-  traceability?: TraceabilityItem[];
-  requirements?: RequirementsDesign;
-  riskRegister?: RiskItem[];
-  architecture?: {
-    overview: string;
-    techStack: {
-      frontend: string;
-      backend: string;
-      database: string;
-      validation: string;
-      testing: string;
-    };
-    rationale: string;
-    alternativesConsidered: string;
+  taskRef?: string;
+  actionCard?: {
+    type: 'approval_request' | 'email_preview' | 'email_list' | 'security_alert';
+    data: any;
   };
-  generatedFiles?: GeneratedFile[];
-  testSuites?: TestSuite[];
-  repairHistory?: RepairRecord[];
-  previewUrl?: string;
-  unresolvedLimitations?: string[];
-  executionLogs: Array<{ timestamp: string; stage: string; message: string; type: 'info' | 'warn' | 'error' | 'success' }>;
-  versionHistory: Array<{ version: number; timestamp: string; summary: string }>;
-}
-
-export interface RepoDoctorInput {
-  repoUrl: string;
-  issueTitle: string;
-  issueDescription: string;
-  issueNumber?: string;
-  expectedBehavior?: string;
-  actualBehavior?: string;
-  reproductionSteps?: string;
-  logsOrStackTrace?: string;
-  targetBranch?: string;
-}
-
-export interface RepoDoctorState {
-  id: string;
-  input: RepoDoctorInput;
-  createdAt: string;
-  updatedAt: string;
-  currentPhase: number;
-  status: 'cloning' | 'analyzing' | 'diagnosing' | 'implementing' | 'verifying' | 'reviewing' | 'completed' | 'error';
-  architecturalMap: {
-    repoName: string;
-    defaultBranch: string;
-    totalFiles: number;
-    languages: string[];
-    mainModules: Array<{ name: string; path: string; responsibility: string; dependencies: string[] }>;
-    entryPoints: string[];
-    testFrameworks: string[];
-    conventions: string;
-  };
-  rootCauseDiagnosis: {
-    summary: string;
-    mechanism: string;
-    relevantFiles: string[];
-    executionFlow: string[];
-    evidence: string;
-    status: 'confirmed' | 'strongly_supported' | 'hypothesis';
-    simplerExplanationsRuledOut: string;
-    earliestFailurePoint: string;
-  };
-  fixStrategy: {
-    proposedFix: string;
-    whyAddressesRootCause: string;
-    alternativesConsidered: string[];
-    affectedInterfaces: string;
-    backwardCompatibility: string;
-    regressionRisks: string;
-  };
-  patch: {
-    branchName: string;
-    modifiedFiles: Array<{ path: string; oldContent: string; newContent: string; diff: string }>;
-    commitMessage: string;
-    pullRequestTitle: string;
-    pullRequestBody: string;
-  };
-  testVerification: {
-    reproductionTest: { name: string; beforeResult: string; afterResult: string };
-    executedChecks: Array<{ command: string; status: 'passed' | 'failed' | 'skipped' | 'blocked'; output: string; durationMs: number }>;
-    unverifiedAreas: string[];
-  };
-  secondPassReview: {
-    securityCheck: { status: 'pass' | 'warning'; notes: string };
-    architecturalFit: { status: 'pass' | 'warning'; notes: string };
-    maintainability: { status: 'pass' | 'warning'; notes: string };
-    remainingConcerns: string[];
-  };
-  openSourceContribution: {
-    rootCauseReport: string;
-    fixSummary: string;
-    testReport: string;
-    readableDiff: string;
-    commitMessage: string;
-    pullRequestDescription: string;
-    reviewChecklist: Array<{ item: string; checked: boolean }>;
-    requiresApproval: boolean;
-    submittedToGitHub: boolean;
-  };
-  executionLogs: Array<{ timestamp: string; phase: string; message: string; type: 'info' | 'warn' | 'error' | 'success' }>;
 }

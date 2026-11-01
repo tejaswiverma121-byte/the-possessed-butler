@@ -1,0 +1,16 @@
+{
+  "model": "protectai/deberta-v3-base-prompt-injection-v2",
+  "device": "mps",
+  "total_samples": 10,
+  "true_positives": 7,
+  "true_negatives": 3,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "false_positive_rate": 0.0,
+  "false_negative_rate": 0.0,
+  "average_latency_ms": 357.77
+}

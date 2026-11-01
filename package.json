@@ -1,8 +1,8 @@
 {
-  "name": "problem2product-ai-root",
+  "name": "sentinel-ai-root",
   "version": "1.0.0",
   "private": true,
-  "description": "Problem2Product AI — Autonomous Problem Investigation, Architecture, Code Generation, and Repository Doctor",
+  "description": "Sentinel AI — Autonomous Local-First Assistant & Sovereign MCP Copilot",
   "scripts": {
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cd server && npm run dev",

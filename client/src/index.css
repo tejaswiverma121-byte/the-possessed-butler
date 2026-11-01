@@ -2,57 +2,732 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --color-bg-primary: #070b14;
-    --color-bg-secondary: #0f172a;
-    --color-bg-card: #151d2e;
-    --color-border: #1e293b;
-    --color-accent: #22c55e;
-  }
-  
-  body {
-    background-color: #070b14;
-    color: #f1f5f9;
-    font-family: 'Inter', sans-serif;
-  }
+/* ==========================================================================
+   SENTINEL AI — CINEMATIC MOONLIT HALLOWEEN THEME
+   Haunted Graveyard under Glowing Cyan Full Moon
+   ========================================================================== */
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+:root {
+  /* Official Design System Tokens */
+  --bg-main: #05090F;
+  --bg-deep-navy: #071521;
+  --bg-surface-primary: #0B1823;
+  --bg-surface-secondary: #10232F;
+  --color-cyan: #43E8F2;
+  --color-teal: #19B9C5;
+  --text-primary: #F0F7FA;
+  --text-secondary: #91A8B6;
+  --color-moonlight: #D9FBFF;
+  --color-lantern-amber: #FFB454;
+  --color-warning-orange: #FF914D;
+  --color-critical-red: #FF5263;
+  --color-success-green: #55D6A0;
+
+  /* Glassmorphism Surface Opacities */
+  --glass-surface-base: rgba(11, 24, 35, 0.88);
+  --glass-surface-elevated: rgba(16, 35, 47, 0.85);
+  --glass-surface-sidebar: rgba(7, 21, 33, 0.92);
+  --glass-border: rgba(67, 232, 242, 0.16);
+  --glass-border-hover: rgba(67, 232, 242, 0.38);
+  --glass-shadow: 0 12px 40px -10px rgba(3, 8, 14, 0.85);
+  --cyan-glow: 0 0 24px -2px rgba(67, 232, 242, 0.35);
+  --amber-glow: 0 0 20px -2px rgba(255, 180, 84, 0.35);
+}
+
+/* Global Box Sizing & Layout Safety */
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+/* Fix Tailwind Missing 4.5 Spacing Utilities */
+.p-4\.5 {
+  padding: 1.25rem !important; /* 20px generous padding */
+}
+.gap-4\.5 {
+  gap: 1.25rem !important; /* 20px clean gap */
+}
+.m-4\.5 {
+  margin: 1.25rem !important;
+}
+
+/* Prevent Any Wrapper Container from Getting Accidental Borders */
+.space-y-4,
+.space-y-2,
+.space-y-3,
+.space-y-5,
+.space-y-6,
+.max-w-4xl,
+.max-w-2xl,
+.max-w-xl {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Prevent Content Cut-off on Scrollable Panes */
+.overflow-y-auto {
+  scrollbar-gutter: stable;
+  overflow-x: hidden !important;
+}
+
+/* --------------------------------------------------------------------------
+   1. Base & Full-Page Atmosphere
+   -------------------------------------------------------------------------- */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: #09080B;
+  color: #E8E0D5;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Layer 1: Full-page Graveyard Landscape (Scoped to .graveyard-mode only) */
+body.graveyard-mode::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 35% 18%, rgba(67, 232, 242, 0.18) 0%, rgba(25, 185, 197, 0.08) 32%, transparent 60%),
+    radial-gradient(circle at 75% 82%, rgba(255, 180, 84, 0.07) 0%, transparent 40%),
+    linear-gradient(to bottom, rgba(5, 9, 15, 0.45) 0%, rgba(5, 9, 15, 0.75) 60%, rgba(5, 9, 15, 0.95) 100%),
+    url('/halloween/haunted_graveyard.jpg');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: 0;
+  pointer-events: none;
+  filter: brightness(0.88) contrast(1.08);
+}
+
+/* Layer 2: Ethereal Cyan & Teal Mist (Scoped to .graveyard-mode only) */
+body.graveyard-mode::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 35% 15%, rgba(217, 251, 255, 0.16) 0%, rgba(67, 232, 242, 0.06) 30%, transparent 65%),
+    radial-gradient(ellipse at 50% 100%, rgba(25, 185, 197, 0.10) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, transparent 45%, rgba(3, 7, 12, 0.8) 100%);
+  z-index: 0;
+  pointer-events: none;
+  animation: ethereal-fog 14s ease-in-out infinite alternate;
+}
+
+/* Ensure React app root sits above fixed background layers */
+#root {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Custom Cinematic Moonlit Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(5, 9, 15, 0.95);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-cyan) 0%, var(--bg-surface-secondary) 100%);
+  border-radius: 9999px;
+  border: 1px solid rgba(67, 232, 242, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-moonlight) 0%, var(--color-teal) 100%);
+  box-shadow: 0 0 10px rgba(67, 232, 242, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   2. Glassmorphic Surfaces & Panels
+   -------------------------------------------------------------------------- */
+
+.halloween-panel,
+.glass-card {
+  background: var(--glass-surface-base) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: var(--glass-shadow);
+}
+
+.halloween-card {
+  background: var(--glass-surface-elevated) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  box-shadow: var(--glass-shadow);
+}
+
+.glow-pumpkin,
+.shadow-glow-pumpkin {
+  box-shadow: 0 0 25px -2px rgba(67, 232, 242, 0.35) !important;
+}
+
+.glow-ember,
+.shadow-glow-ember {
+  box-shadow: 0 0 28px 0px rgba(255, 180, 84, 0.35) !important;
+}
+
+.glow-vampire,
+.shadow-glow-vampire {
+  box-shadow: 0 0 25px -2px rgba(255, 82, 99, 0.40) !important;
+}
+
+.glow-dark,
+.shadow-glow-dark {
+  box-shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.90) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Sidebar Navigation Styling
+   -------------------------------------------------------------------------- */
+
+aside.w-68 {
+  background: var(--glass-surface-sidebar) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  box-shadow: 8px 0 32px rgba(2, 6, 10, 0.7) !important;
+  padding: 1.25rem 1rem !important;
+}
+
+/* Sidebar Brand Header */
+aside.w-68 h1 {
+  color: var(--color-moonlight) !important;
+  text-shadow: 0 0 12px rgba(67, 232, 242, 0.45);
+}
+
+/* New Conversation Button */
+aside.w-68 button:has(svg.lucide-plus),
+aside.w-68 button.font-extrabold:has(span) {
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-teal) 100%) !important;
+  color: #05090F !important;
+  font-weight: 800 !important;
+  border: 1px solid rgba(217, 251, 255, 0.4) !important;
+  box-shadow: 0 0 22px rgba(67, 232, 242, 0.4) !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.25s ease !important;
+}
+aside.w-68 button:has(svg.lucide-plus):hover,
+aside.w-68 button.font-extrabold:has(span):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(67, 232, 242, 0.6) !important;
+  filter: brightness(1.08);
+}
+
+/* Navigation Items */
+aside.w-68 nav button {
+  color: var(--text-secondary) !important;
+  padding: 0.75rem 1rem !important;
+  margin-bottom: 0.35rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid transparent !important;
+}
+aside.w-68 nav button:hover {
+  color: var(--text-primary) !important;
+  background: rgba(16, 35, 47, 0.65) !important;
+  border-color: rgba(67, 232, 242, 0.15) !important;
+}
+
+/* Active Navigation Item */
+aside.w-68 nav button.font-bold,
+aside.w-68 nav button[class*="border-l-4"] {
+  background: linear-gradient(90deg, rgba(25, 185, 197, 0.20) 0%, rgba(11, 24, 35, 0.70) 100%) !important;
+  color: var(--color-cyan) !important;
+  border-left: 3px solid var(--color-cyan) !important;
+  border-top: 1px solid var(--glass-border) !important;
+  border-right: 1px solid var(--glass-border) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  box-shadow: inset 0 0 16px rgba(67, 232, 242, 0.08) !important;
+}
+
+/* User Profile Box at Sidebar Bottom */
+aside.w-68 div:has(> button[title*="Edit"]) {
+  background: var(--bg-surface-primary) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.75rem !important;
+  padding: 0.75rem 0.85rem !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* --------------------------------------------------------------------------
+   4. Main Content Area & Reading Comfort
+   -------------------------------------------------------------------------- */
+
+#root > div > div.flex-1 {
+  background: rgba(5, 9, 15, 0.72) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Top Active Task Status Bar */
+div.flex-1 > div:has(span.animate-ping) {
+  background: rgba(16, 35, 47, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(67, 232, 242, 0.22) !important;
+  padding: 0.65rem 1.25rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Chat Conversation & Messages (Generous Spacing, No Clipping)
+   -------------------------------------------------------------------------- */
+
+/* Target the exact message card inside .max-w-2xl */
+.max-w-2xl > div.relative.rounded-2xl {
+  padding: 1.25rem 1.5rem !important;
+  border-radius: 1rem !important;
+  margin-bottom: 0.5rem !important;
+  box-shadow: 0 8px 24px rgba(2, 6, 10, 0.55) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Assistant Message */
+.max-w-2xl > div.relative.rounded-2xl:not([class*="from-pumpkin"]) {
+  background: var(--glass-surface-base) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text-primary) !important;
+}
+.max-w-2xl > div.relative.rounded-2xl:not([class*="from-pumpkin"]):hover {
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: 0 10px 32px rgba(3, 10, 18, 0.7), var(--cyan-glow) !important;
+}
+
+/* User Message */
+.max-w-2xl > div.relative.rounded-2xl[class*="from-pumpkin"],
+.max-w-2xl > div.rounded-2xl[class*="from-pumpkin"] {
+  background: linear-gradient(135deg, rgba(16, 35, 47, 0.95) 0%, rgba(7, 21, 33, 0.95) 100%) !important;
+  border: 1px solid rgba(67, 232, 242, 0.40) !important;
+  color: var(--color-moonlight) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 6px 20px rgba(25, 185, 197, 0.16) !important;
+}
+.max-w-2xl > div.rounded-2xl[class*="from-pumpkin"] div.whitespace-pre-wrap {
+  color: var(--text-primary) !important;
+}
+
+/* Hero Banner on Conversation View */
+div:has(> div > img[src*="cyber_halloween_banner"]) {
+  background: var(--bg-surface-primary) !important;
+  border: 1px solid var(--glass-border-hover) !important;
+  border-radius: 1.25rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: var(--cyan-glow), var(--glass-shadow) !important;
+}
+
+/* Prompt Spells Pill Bar */
+div.overflow-x-auto:has(button) button {
+  background: var(--glass-surface-elevated) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text-secondary) !important;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: 0.75rem !important;
+  margin-right: 0.5rem !important;
+  transition: all 0.2s ease !important;
+}
+div.overflow-x-auto:has(button) button:hover {
+  background: rgba(25, 185, 197, 0.18) !important;
+  border-color: var(--color-cyan) !important;
+  color: var(--color-moonlight) !important;
+  box-shadow: 0 0 14px rgba(67, 232, 242, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+/* Message Composer Input Area */
+div.p-4.border-t:has(input[type="text"]) {
+  background: rgba(7, 21, 33, 0.94) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-top: 1px solid var(--glass-border) !important;
+  box-shadow: 0 -8px 32px rgba(3, 8, 14, 0.65);
+  padding: 1.25rem 1.5rem !important;
+}
+
+/* Legacy Chat Composer Text Inputs (Scoped to sentinel composer only) */
+.sentinel-composer input[type="text"] {
+  background: var(--bg-surface-primary);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.85rem 1.15rem;
+  border-radius: 0.85rem;
+  transition: all 0.2s ease;
+}
+.sentinel-composer input[type="text"]:focus {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 18px rgba(67, 232, 242, 0.32);
+  outline: none;
+}
+
+/* Send Button */
+button:has(svg.lucide-send) {
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-teal) 100%) !important;
+  color: #05090F !important;
+  font-weight: 800 !important;
+  padding: 0.85rem 1.5rem !important;
+  border-radius: 0.85rem !important;
+  box-shadow: 0 0 20px rgba(67, 232, 242, 0.42) !important;
+  transition: all 0.2s ease !important;
+}
+button:has(svg.lucide-send):hover:not(:disabled) {
+  box-shadow: 0 0 28px rgba(67, 232, 242, 0.65) !important;
+  filter: brightness(1.10);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   6. Action Cards: Approvals, Bookings & Security Alerts
+   -------------------------------------------------------------------------- */
+
+/* Target the exact approval card container */
+.max-w-2xl div.rounded-2xl[class*="border-2"] {
+  background: var(--glass-surface-base) !important;
+  border: 1.5px solid var(--color-warning-orange) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-top: 0.75rem !important;
+  box-shadow: 0 10px 32px rgba(3, 8, 14, 0.75), 0 0 22px rgba(255, 145, 77, 0.25) !important;
+}
+.max-w-2xl div.rounded-2xl[class*="border-2"] button[class*="from-pumpkin"] {
+  background: linear-gradient(135deg, var(--color-success-green) 0%, var(--color-teal) 100%) !important;
+  color: #05090F !important;
+  font-weight: 800 !important;
+  padding: 0.65rem 1.25rem !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 0 16px rgba(85, 214, 160, 0.35) !important;
+}
+
+/* Email Preview Card */
+.max-w-2xl div.rounded-2xl:has(svg.lucide-mail) {
+  background: var(--glass-surface-elevated) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-top: 0.75rem !important;
+  box-shadow: var(--glass-shadow);
+}
+
+/* Security Alert Cards (Hostile Phishing & Threats) */
+div[class*="bg-vampire"],
+div:has(span:contains("HIGH RISK PHISHING")) {
+  background: rgba(35, 10, 16, 0.85) !important;
+  border: 1.5px solid var(--color-critical-red) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-top: 0.75rem !important;
+  color: #FFCAD0 !important;
+  box-shadow: 0 8px 32px rgba(255, 82, 99, 0.25) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Email Center View (Generous Padding & Spacing, Zero Clipping)
+   -------------------------------------------------------------------------- */
+
+/* Email Center Header */
+div.flex-1:has(h2:contains("Email & Document Intelligence")) > div.border-b {
+  background: rgba(7, 21, 33, 0.95) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  padding: 1.25rem 1.5rem !important;
+}
+
+/* Category Filter Pills */
+div:has(> div > button:contains("All Messages")) {
+  padding: 0.85rem 1.5rem !important;
+}
+div:has(> div > button:contains("All Messages")) button {
+  background: var(--bg-surface-secondary) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text-secondary) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+div:has(> div > button:contains("All Messages")) button:hover {
+  border-color: var(--color-cyan) !important;
+  color: var(--color-moonlight) !important;
+}
+div:has(> div > button:contains("All Messages")) button[class*="from-pumpkin"],
+div:has(> div > button:contains("All Messages")) button[class*="font-bold"]:not([class*="text-slate"]) {
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-teal) 100%) !important;
+  color: #05090F !important;
+  font-weight: 800 !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 16px rgba(67, 232, 242, 0.4) !important;
+}
+
+/* Email List Pane (Left Column) */
+div.md\:col-span-5 {
+  background: rgba(7, 21, 33, 0.92) !important;
+  border-right: 1px solid var(--glass-border) !important;
+}
+div.md\:col-span-5 > div {
+  padding: 1.15rem 1.25rem !important;
+  border-bottom: 1px solid rgba(67, 232, 242, 0.08) !important;
+  transition: background 0.15s ease !important;
+}
+div.md\:col-span-5 > div:hover {
+  background: rgba(16, 35, 47, 0.70) !important;
+}
+div.md\:col-span-5 > div[class*="border-l-4"] {
+  background: rgba(16, 35, 47, 0.95) !important;
+  border-left: 3px solid var(--color-cyan) !important;
+  box-shadow: inset 0 0 20px rgba(67, 232, 242, 0.08) !important;
+}
+div.md\:col-span-5 span[title="Unread"],
+div.md\:col-span-5 span[class*="bg-pumpkin-400"] {
+  background: var(--color-cyan) !important;
+  box-shadow: 0 0 10px var(--color-cyan) !important;
+}
+
+/* Email Full Body Pane (Right Column) — High Contrast, Generous Padding */
+div.md\:col-span-7 {
+  background: rgba(11, 24, 35, 0.95) !important;
+  padding: 1.75rem 2rem !important; /* Generous 28px/32px internal breathing room */
+  overflow-x: hidden !important;
+}
+
+/* Message Header Card Inside Right Pane */
+div.md\:col-span-7 .rounded-2xl:has(h3) {
+  background: var(--bg-surface-secondary) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem 1.5rem !important; /* 20px / 24px generous padding */
+  box-shadow: var(--glass-shadow) !important;
+  margin-bottom: 1.25rem !important;
+}
+
+/* Prevent Header Title and Buttons from Colliding or Cutting Off */
+div.md\:col-span-7 .rounded-2xl:has(h3) > div.flex {
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+div.md\:col-span-7 .rounded-2xl:has(h3) h3 {
+  color: var(--color-moonlight) !important;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+  word-break: break-word !important;
+}
+div.md\:col-span-7 .rounded-2xl:has(h3) button {
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-teal) 100%) !important;
+  color: #05090F !important;
+  font-weight: 800 !important;
+  padding: 0.65rem 1.15rem !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 0 14px rgba(67, 232, 242, 0.35) !important;
+  white-space: nowrap !important;
+}
+
+/* Email Body Card */
+div.md\:col-span-7 div.whitespace-pre-wrap {
+  background: rgba(7, 21, 33, 0.88) !important;
+  border: 1px solid rgba(67, 232, 242, 0.12) !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem 1.75rem !important; /* Generous reading padding */
+  margin-bottom: 1.25rem !important;
+  color: var(--text-primary) !important;
+  font-size: 0.925rem !important;
+  line-height: 1.75 !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  word-break: break-word !important;
+}
+
+/* Attachments Cards */
+div.md\:col-span-7 div.space-y-3 > div.rounded-2xl {
+  background: var(--bg-surface-secondary) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem 1.5rem !important;
+  margin-top: 0.75rem !important;
+  box-shadow: var(--glass-shadow);
+}
+div.md\:col-span-7 div.space-y-3 button {
+  background: rgba(16, 35, 47, 0.9) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--color-cyan) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.65rem !important;
+}
+div.md\:col-span-7 div.space-y-3 button:hover {
+  background: rgba(25, 185, 197, 0.25) !important;
+  border-color: var(--color-cyan) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Security Center & Possessed Butler Defense
+   -------------------------------------------------------------------------- */
+
+/* Security Center Container */
+div.flex-1:has(h2:contains("Possessed Butler Defense")) {
+  padding: 2rem !important;
+}
+
+/* Security Hero Crest Banner */
+div:has(> div > img[src*="cyber_security_crest"]) {
+  background: linear-gradient(135deg, rgba(16, 35, 47, 0.95) 0%, rgba(7, 21, 33, 0.95) 100%) !important;
+  border: 1.5px solid var(--glass-border-hover) !important;
+  border-radius: 1.25rem !important;
+  padding: 1.75rem 2rem !important;
+  margin-bottom: 1.75rem !important;
+  gap: 1.5rem !important;
+  box-shadow: var(--cyan-glow), var(--glass-shadow) !important;
+}
+
+/* 3 Core Security Pillars */
+div.grid-cols-1.md\:grid-cols-3 > div {
+  background: var(--glass-surface-base) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s ease !important;
+}
+div.grid-cols-1.md\:grid-cols-3 > div:hover {
+  border-color: var(--glass-border-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(2, 6, 10, 0.8), var(--cyan-glow) !important;
+}
+
+/* Audit Log List Items */
+div:has(> h3:contains("Real-Time Security Event")) ~ div > div {
+  background: var(--glass-surface-elevated) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.85rem !important;
+  padding: 1.15rem 1.35rem !important;
+  margin-bottom: 0.75rem !important;
+  transition: border-color 0.2s ease !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. Online Bookings & Tasks Checkpoints
+   -------------------------------------------------------------------------- */
+
+/* Tasks View Container */
+div.flex-1:has(h2:contains("Tasks & Human Approval")) {
+  padding: 2rem !important;
+}
+div.flex-1:has(h2:contains("Tasks & Human Approval")) div.space-y-4 > div.rounded-2xl {
+  background: var(--glass-surface-base) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.25rem !important;
+  box-shadow: var(--glass-shadow);
+}
+
+/* Bookings View Container */
+div.flex-1:has(h2:contains("Secure Online Booking Hub")) {
+  padding: 2rem !important;
+}
+div.grid.grid-cols-1.md\:grid-cols-2 > div {
+  background: var(--glass-surface-base) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s ease !important;
+}
+div.grid.grid-cols-1.md\:grid-cols-2 > div:hover {
+  border-color: var(--glass-border-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(2, 6, 10, 0.8), var(--cyan-glow) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. Modals & Inspector Drawer (Spacious Dialogs, Never Cut Off)
+   -------------------------------------------------------------------------- */
+
+/* Account & Confirmation Modal Dialogs */
+div.fixed.inset-0.z-50:has(div.max-w-xl),
+div.fixed.inset-0.z-50:has(div.max-w-lg) {
+  background: rgba(3, 7, 12, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  padding: 1.5rem !important;
+}
+div.fixed.inset-0.z-50 div.max-w-xl,
+div.fixed.inset-0.z-50 div.max-w-lg {
+  background: var(--bg-surface-primary) !important;
+  border: 1.5px solid var(--glass-border-hover) !important;
+  border-radius: 1.25rem !important;
+  padding: 2rem !important; /* Generous 32px padding */
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), var(--cyan-glow) !important;
+  color: var(--text-primary) !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+/* Inspector Drawer (Right Side) */
+aside.fixed.inset-y-0.right-0 {
+  background: rgba(7, 21, 33, 0.96) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-left: 1px solid var(--glass-border-hover) !important;
+  box-shadow: -10px 0 40px rgba(2, 6, 10, 0.85) !important;
+  padding: 1.25rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. Atmospheric Animations & Accessibility
+   -------------------------------------------------------------------------- */
+
+@keyframes ethereal-fog {
+  0% {
+    opacity: 0.65;
+    transform: translateY(0px) scale(1.0);
   }
-  ::-webkit-scrollbar-track {
-    background: #0b1120;
+  50% {
+    opacity: 0.90;
+    transform: translateY(-8px) scale(1.02);
   }
-  ::-webkit-scrollbar-thumb {
-    background: #1e293b;
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
+  100% {
+    opacity: 0.65;
+    transform: translateY(0px) scale(1.0);
   }
 }
 
-@layer utilities {
-  .glass-panel {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
+/* Spiderweb & Bat Accents: Restrained, Subtle, Non-Intrusive */
+svg:has(path[d*="M0,0 L100,100"]) {
+  color: var(--color-cyan) !important;
+  opacity: 0.22 !important;
+  transition: opacity 0.3s ease;
+}
+div:hover > svg:has(path[d*="M0,0 L100,100"]) {
+  opacity: 0.45 !important;
+}
 
-  .glass-card {
-    background: rgba(21, 29, 46, 0.65);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  .glow-green {
-    box-shadow: 0 0 25px -5px rgba(34, 197, 94, 0.25);
+/* Responsive Viewports Optimization */
+@media (max-width: 768px) {
+  body::before {
+    background-position: center top;
+    background-attachment: scroll;
   }
-
-  .glow-blue {
-    box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25);
+  body::after {
+    display: none;
   }
 }
